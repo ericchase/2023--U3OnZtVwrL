@@ -9,7 +9,8 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "prettier --plugin-search-dir . --check . && eslint .",
-    "format": "prettier --plugin-search-dir . --write ."
+    "format": "prettier --plugin-search-dir . --write .",
+    "pages": "pnpm build && pnpm exec gh-pages -d build -t true"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^2.1.0",
@@ -28,5 +29,8 @@
     "typescript": "^5.2.2",
     "vite": "^4.4.9"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "gh-pages": "^6.0.0"
+  }
 }
