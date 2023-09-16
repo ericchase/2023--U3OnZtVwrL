@@ -126,7 +126,6 @@
   <div><textarea>textarea</textarea></div>
   <div><var>var</var></div>
 </div>
-<hr />
 
 <h1>Neither Semantic nor Styled</h1>
 

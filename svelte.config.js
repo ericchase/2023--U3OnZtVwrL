@@ -4,7 +4,10 @@ import { vitePreprocess } from '@sveltejs/kit/vite';
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
   kit: {
-    adapter: adapter()
+    adapter: adapter(),
+    paths: {
+      base: process.env.NODE_ENV === 'production' ? '/2023--U3OnZtVwrL' : ''
+    }
   },
   preprocess: vitePreprocess()
 };
