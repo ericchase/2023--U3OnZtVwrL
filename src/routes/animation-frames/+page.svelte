@@ -2,49 +2,64 @@
   import { addListener, pause, start } from '$lib/request-animation-frame';
   import { onMount } from 'svelte';
 
-  let l200 = 0;
-  let l20 = 0;
-  let l2 = 0;
+  let left1 = 0;
+  let left2 = 0;
+  let left3 = 0;
 
-  let count200 = 0;
-  let count20 = 0;
+  let count1 = 0;
   let count2 = 0;
+  let count3 = 0;
+
+  let multiplyer1 = 30;
+  let multiplyer2 = 10;
+  let multiplyer3 = 1;
 
   onMount(() => {
     addListener({
-      delay: 60 * 30,
+      delay: 60 * multiplyer1,
       callback: () => {
-        l200 += 10 * 30;
-        if (l200 > 400) l200 = l200 - 400;
-        ++count200;
+        left1 += 10 * multiplyer1;
+        if (left1 > 400) left1 = left1 - 400;
+        ++count1;
       }
     });
     addListener({
-      delay: 60 * 10,
+      delay: 60 * multiplyer2,
       callback: () => {
-        l20 += 10 * 10;
-        if (l20 > 400) l20 = l20 - 400;
-        ++count20;
-      }
-    });
-    addListener({
-      delay: 60 * 1,
-      callback: () => {
-        l2 += 10 * 1;
-        if (l2 > 400) l2 = l2 - 400;
+        left2 += 10 * multiplyer2;
+        if (left2 > 400) left2 = left2 - 400;
         ++count2;
       }
     });
-    // start(window);
+    addListener({
+      delay: 60 * multiplyer3,
+      callback: () => {
+        left3 += 10 * multiplyer3;
+        if (left3 > 400) left3 = left3 - 400;
+        ++count3;
+      }
+    });
+    start(window);
   });
+
+  let running = true;
 </script>
 
-<div class="ball" style:left="{l200}px">200ms</div>
-<div class="ball" style:left="{l20}px">20ms</div>
-<div class="ball" style:left="{l2}px">2ms</div>
+<div class="ball" style:left="{left1}px">{60 * multiplyer1}ms</div>
+<div class="ball" style:left="{left2}px">{60 * multiplyer2}ms</div>
+<div class="ball" style:left="{left3}px">{60 * multiplyer3}ms</div>
 
-<div>{count200} {count20} {count2}</div>
-<button on:click={() => pause()}>Pause</button>
+<div>Frame Count</div>
+<div>1: {count1}</div>
+<div>2: {count2}</div>
+<div>3: {count3}</div>
+
+<button
+  on:click={() => {
+    running = !running;
+    pause();
+  }}>{running ? 'Pause' : 'Unpause'}</button
+>
 
 <style>
   .ball {
@@ -52,7 +67,6 @@
     background-color: blue;
     color: white;
     border: none;
-    /* border-radius: 100%; */
     height: 4em;
     width: 4em;
     margin: 2px;
