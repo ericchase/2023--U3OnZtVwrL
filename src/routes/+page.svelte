@@ -1,13 +1,6 @@
 <script>
-  import Component from '$lib/component.svelte';
+  import { base } from '$app/paths';
 </script>
 
-<main>
-  <Component />
-</main>
-
-<style>
-  main {
-    margin: 1em;
-  }
-</style>
+<a href="{base}/html-elements">Html Elements</a>
+<a href="{base}/animation-frames">Animation Frames</a>
