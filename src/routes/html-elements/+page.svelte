@@ -1,4 +1,5 @@
 <script>
+  import ElementsNormalize from '$lib/ElementsNormalize.svelte';
   import ElementsRaw from '$lib/ElementsRaw.svelte';
   import ElementsReset from '$lib/ElementsReset.svelte';
 </script>
@@ -8,6 +9,10 @@
   <div class="col">
     Default CSS
     <ElementsRaw />
+  </div>
+  <div class="col">
+    <a href="https://necolas.github.io/normalize.css/">normalize.css</a>
+    <ElementsNormalize />
   </div>
   <div class="col">
     <a href="https://andy-bell.co.uk/a-more-modern-css-reset/">Modern CSS Reset</a>
