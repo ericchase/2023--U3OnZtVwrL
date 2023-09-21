@@ -1,4 +1,5 @@
 <script>
+  import { base } from '$app/paths';
   import '$lib/index.css';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
@@ -19,7 +20,7 @@
 
 <div class="row">
   <div class="row">
-    <a href="/">Home</a>
+    <a href="{base}/">Home</a>
     <div>( <a href="#" on:click={() => mode.set('dark')}>dark</a> <a href="#" on:click={() => mode.set('light')}>light</a> )</div>
   </div>
   <div>( <a href="#" on:click={() => mode.set('dark')}>dark</a> <a href="#" on:click={() => mode.set('light')}>light</a> )</div>
