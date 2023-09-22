@@ -50,7 +50,7 @@
     <div class="grid gap">
       <div>{tag}</div>
       <div><div>{@html html}</div></div>
-      <div><textarea on:input={(evt) => update(idx, evt)} on:keydown={keydown} /></div>
+      <div><textarea on:input={(evt) => update(idx, evt)} on:keydown={keydown} value={`${tag} {\n  \n}`} /></div>
       <div><div class="transformed">{@html html}</div></div>
     </div>
   {/each}
