@@ -33,7 +33,6 @@
   <h2>Inline-Level</h2>
   <div class="layout-block">
     <div>
-      <a href="#">a</a>
       <div class="layout-space" />
       <abbr>abbr</abbr>
       <div class="layout-space" />
@@ -68,6 +67,8 @@
   <h2>Inline-Level</h2>
   <div class="layout-block">
     <div>
+      <a href="#">a</a>
+      <div class="layout-space" />
       <b>b</b>
       <div class="layout-space" />
       <i>i</i>
@@ -107,22 +108,16 @@
       <h6>h6</h6>
       <div class="layout-space" />
       <menu>menu</menu>
-      <div class="layout-space" />
-      <ol>ol</ol>
-      <div class="layout-space" />
+      <div class="layout-space">ol</div>
       <ol>
-        ol
         <li>li</li>
       </ol>
       <div class="layout-space" />
       <p>p</p>
       <div class="layout-space" />
       <pre>pre</pre>
-      <div class="layout-space" />
-      <ul>ul</ul>
-      <div class="layout-space" />
+      <div class="layout-space">ul</div>
       <ul>
-        ul
         <li>li</li>
       </ul>
       <div class="layout-space">wbr:</div>
