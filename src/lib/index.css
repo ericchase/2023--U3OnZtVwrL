@@ -12,6 +12,9 @@ body {
 
 body > .entry-point {
   display: contents;
+  /* & > * {
+    line-height: 1;
+  } */
 }
 
 a.link {
@@ -24,7 +27,7 @@ a.link {
   --color-2: #000;
 }
 .light {
-  --color-1: #bbb;
+  --color-1: #ddd;
   --color-1a: #000;
   --color-2: #fff;
 }

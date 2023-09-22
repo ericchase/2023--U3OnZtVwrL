@@ -15,10 +15,10 @@
       head.appendChild(elStyle);
       const [tag] = elements[i];
       const storeSheet = sheets[i];
-      elStyle.appendChild(document.createTextNode(`.transformed ${tag} {${get(storeSheet)}}`));
+      elStyle.appendChild(document.createTextNode(`.transformed {${get(storeSheet)}}`));
       storeSheet.subscribe((css) => {
         if (elStyle.firstChild) {
-          elStyle.replaceChild(document.createTextNode(`.transformed ${tag} {${css}}`), elStyle.firstChild);
+          elStyle.replaceChild(document.createTextNode(`.transformed {${css}}`), elStyle.firstChild);
         }
       });
     }
@@ -27,32 +27,41 @@
   function update(idx: number, evt: Event & { currentTarget: EventTarget & HTMLTextAreaElement }) {
     sheets[idx].set(evt.currentTarget.value);
   }
+  function keydown(evt: KeyboardEvent & { currentTarget: EventTarget & HTMLTextAreaElement }) {
+    if (evt.key === 'Tab') {
+      evt.preventDefault();
+      let start = evt.currentTarget.selectionStart;
+      let end = evt.currentTarget.selectionEnd;
+      evt.currentTarget.value = evt.currentTarget.value.substring(0, start) + '  ' + evt.currentTarget.value.substring(end);
+      evt.currentTarget.selectionStart = evt.currentTarget.selectionEnd = start + 2;
+    }
+  }
 </script>
 
-<div class="col gap">
+<div class="col gap fill-w">
   <br />
   <div class="grid gap">
     <div />
-    <div class="row">Default</div>
+    <div class="row center">Default</div>
     <div />
-    <div class="row">Styled</div>
+    <div class="row center">Styled</div>
   </div>
   {#each elements as [tag, html], idx}
     <div class="grid gap">
       <div>{tag}</div>
       <div><div>{@html html}</div></div>
-      <div><textarea on:input={(evt) => update(idx, evt)} /></div>
+      <div><textarea on:input={(evt) => update(idx, evt)} on:keydown={keydown} /></div>
       <div><div class="transformed">{@html html}</div></div>
     </div>
   {/each}
 </div>
 
 <style>
-  .col {
+  .col.fill-w {
     width: 100%;
   }
 
-  .row {
+  .row.center {
     align-items: center;
     justify-content: center;
   }
