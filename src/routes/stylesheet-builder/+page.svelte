@@ -1,16 +1,28 @@
 <script lang="ts">
   import elements from '$lib/data/elements.json';
-  import { writable, type Writable } from 'svelte/store';
+  import { onMount } from 'svelte';
+  import { get, writable, type Writable } from 'svelte/store';
 
   let sheets: Writable<string>[] = [];
   for (const _ of elements) {
     sheets.push(writable(''));
   }
-  for (const sheet of sheets) {
-    sheet.subscribe((value) => {
-      console.log(value);
-    });
-  }
+
+  onMount(() => {
+    for (let i = 0; i < elements.length; ++i) {
+      const elStyle = document.createElement('style');
+      const head = document.head || document.getElementsByTagName('head')[0];
+      head.appendChild(elStyle);
+      const [tag] = elements[i];
+      const storeSheet = sheets[i];
+      elStyle.appendChild(document.createTextNode(`.transformed ${tag} {${get(storeSheet)}}`));
+      storeSheet.subscribe((css) => {
+        if (elStyle.firstChild) {
+          elStyle.replaceChild(document.createTextNode(`.transformed ${tag} {${css}}`), elStyle.firstChild);
+        }
+      });
+    }
+  });
 
   function update(idx: number, evt: Event & { currentTarget: EventTarget & HTMLTextAreaElement }) {
     sheets[idx].set(evt.currentTarget.value);
@@ -30,7 +42,7 @@
       <div>{tag}</div>
       <div><div>{@html html}</div></div>
       <div><textarea on:input={(evt) => update(idx, evt)} /></div>
-      <div><div>{@html html}</div></div>
+      <div><div class="transformed">{@html html}</div></div>
     </div>
   {/each}
 </div>
@@ -51,7 +63,7 @@
 
   .grid {
     display: grid;
-    grid-template-columns: 6em 1fr 0fr 1fr;
+    grid-template-columns: 6em 1fr 1fr 1fr;
     & > div {
       background-color: var(--color-1);
       height: 100%;
