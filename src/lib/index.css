@@ -15,7 +15,7 @@ body > .entry-point {
   display: contents;
 }
 
-a {
+a.site {
   color: var(--color-1a);
 }
 
@@ -28,4 +28,13 @@ a {
   --color-1: #eee;
   --color-1a: #000;
   --color-2: #fff;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+.col {
+  display: flex;
+  flex-direction: column;
 }

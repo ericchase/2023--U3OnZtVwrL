@@ -1,8 +1,11 @@
 <script>
   import { base } from '$app/paths';
-  import '$lib/index.css';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
+
+  import '$lib/index.css';
+  import '$lib/normalize.css';
+  import '$lib/reset.css';
 
   const mode = writable('light');
   onMount(() => {
@@ -20,10 +23,10 @@
 
 <div class="row">
   <div class="row">
-    <a href="{base}/">Home</a>
-    <div>( <a href="#" on:click={() => mode.set('dark')}>dark</a> <a href="#" on:click={() => mode.set('light')}>light</a> )</div>
+    <a class="site" href="{base}/">Home</a>
+    <div>( <a class="site" href="#" on:click={() => mode.set('dark')}>dark</a> <a class="site" href="#" on:click={() => mode.set('light')}>light</a> )</div>
   </div>
-  <div>( <a href="#" on:click={() => mode.set('dark')}>dark</a> <a href="#" on:click={() => mode.set('light')}>light</a> )</div>
+  <div>( <a class="site" href="#" on:click={() => mode.set('dark')}>dark</a> <a class="site" href="#" on:click={() => mode.set('light')}>light</a> )</div>
 </div>
 <slot />
 
