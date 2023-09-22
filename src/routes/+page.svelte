@@ -3,9 +3,9 @@
 </script>
 
 <div class="col">
-  <a class="site" href="{base}/animation-frames">Animation Frames</a>
-  <a class="site" href="{base}/html-elements">Html Elements</a>
-  <a class="site" href="{base}/stylesheet-builder">Stylesheet Builder</a>
+  <a class="link" href="{base}/animation-frames">Animation Frames</a>
+  <a class="link" href="{base}/html-elements">Html Elements</a>
+  <a class="link" href="{base}/stylesheet-builder">Stylesheet Builder</a>
 </div>
 
 <style>

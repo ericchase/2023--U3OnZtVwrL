@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { base } from '$app/paths';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
@@ -7,9 +7,9 @@
   import '$lib/normalize.css';
   import '$lib/reset.css';
 
-  const mode = writable('light');
+  const theme = writable('light');
   onMount(() => {
-    mode.subscribe((value) => {
+    theme.subscribe((value) => {
       if (value === 'light') {
         document.documentElement.classList.remove('dark');
         document.documentElement.classList.add('light');
@@ -19,22 +19,55 @@
       }
     });
   });
+  function mode(key: string) {
+    return () => theme.set(key);
+  }
 </script>
 
-<div class="row">
-  <div class="row">
-    <a class="site" href="{base}/">Home</a>
-    <div>( <a class="site" href="#" on:click={() => mode.set('dark')}>dark</a> <a class="site" href="#" on:click={() => mode.set('light')}>light</a> )</div>
-  </div>
-  <div>( <a class="site" href="#" on:click={() => mode.set('dark')}>dark</a> <a class="site" href="#" on:click={() => mode.set('light')}>light</a> )</div>
+<div class="grid">
+  <a class="link" href="{base}/">Home</a>
+  {#each { length: 2 } as _}
+    <div class="row">
+      ({#each ['light', 'dark'] as key}<a class="link" href="#" on:click={mode(key)}>{key}</a>{/each})
+    </div>
+  {/each}
 </div>
-<slot />
+<div class="pad">
+  <slot />
+</div>
 
 <style>
-  .row {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+  .grid {
+    background-color: var(--color-2);
+    display: grid;
+    grid-template-columns: max-content 1fr max-content;
     gap: 1em;
+    position: sticky;
+    top: 0;
+    padding: 1em;
+  }
+  .grid > * {
+    min-inline-size: max-content;
+  }
+  .row {
+    gap: 1ch;
+  }
+  @media screen and (max-width: 600px) {
+    /* .grid {
+      grid-template-columns: 1fr max-content;
+    } */
+    .grid {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap-reverse;
+      justify-content: space-between;
+    }
+    .grid > :nth-child(2) {
+      display: none;
+    }
+  }
+  .pad {
+    padding: 1em;
+    padding-top: 0;
   }
 </style>
