@@ -9,14 +9,12 @@
   }
 
   onMount(() => {
-    for (let i = 0; i < elements.length; ++i) {
+    for (const sheet of sheets) {
       const elStyle = document.createElement('style');
       const head = document.head || document.getElementsByTagName('head')[0];
       head.appendChild(elStyle);
-      const [tag] = elements[i];
-      const storeSheet = sheets[i];
-      elStyle.appendChild(document.createTextNode(`.transformed {${get(storeSheet)}}`));
-      storeSheet.subscribe((css) => {
+      elStyle.appendChild(document.createTextNode(`.transformed {${get(sheet)}}`));
+      sheet.subscribe((css) => {
         if (elStyle.firstChild) {
           elStyle.replaceChild(document.createTextNode(`.transformed {${css}}`), elStyle.firstChild);
         }
