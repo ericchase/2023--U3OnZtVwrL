@@ -50,7 +50,7 @@
   ["html", "<html>html</html>"],
   ["i", "<i>italics</i>"],
   ["iframe", "<iframe/>"],
-  ["img", "<img src='/img.png'/>"],
+  ["img", "<img src='./img.png'/>"],
   ["input", "<input/>"],
   ["ins", "<ins>ins</ins>"],
   ["kbd", "<kbd>kbd</kbd>"],
