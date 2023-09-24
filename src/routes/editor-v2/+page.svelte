@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { countReverse, range } from '$lib/lib';
+  import { onMount, tick } from 'svelte';
   import { get, writable, type Writable } from 'svelte/store';
 
   let editor: HTMLDivElement;
@@ -44,14 +45,40 @@
     }
   }
 
+  let lines = ['aaaaaaaaaaaa', 'aaaaaaaaaaaa', 'aaaaaaaaaaaa', 'aaaaaaaaaaaa'];
+
+  function addLine() {
+    lines.push('');
+    lines = lines;
+  }
+
+  function tryFocusNode(node: Node | null | undefined) {
+    if (node instanceof HTMLElement) {
+      (node as HTMLElement).focus();
+      return true;
+    }
+    return false;
+  }
+  function stopPropagation(evt: Event) {
+    // evt.stopPropagation();
+    evt.stopImmediatePropagation();
+  }
+
   function ed_clk() {
-    editor.toggleAttribute('contenteditable', true);
-    editor.focus();
+    console.log(editor.children);
+    for (const index of countReverse(editor.children)) {
+      if (tryFocusNode(editor.children[index])) break;
+    }
+    // editor.toggleAttribute('contenteditable', true);
+    // editor.focus();
+    // for (const child of editor.children) {
+    //   child.toggleAttribute('contenteditable', true);
+    // }
   }
   function ed_fsi() {
-    editor.classList.add('focused');
-    editor.innerHTML = '';
-    editor.innerText = editorHtml;
+    // editor.classList.add('focused');
+    // editor.innerHTML = '';
+    // editor.innerText = editorHtml;
   }
   function ed_fso() {
     // editorHtml = (editor.innerText ?? '').replace(/[^\S\n\r]{2,}/g, ' ');
@@ -59,30 +86,58 @@
     // editor.innerHTML = editorHtml;
     // editor.classList.remove('focused');
     // editor.toggleAttribute('contenteditable', false);
-    // mirrorHtml();
+    // for (const child of editor.children) {
+    //   child.toggleAttribute('contenteditable', true);
+    // }
+    mirrorHtml();
   }
   function ed_key(evt: KeyboardEvent & { currentTarget: EventTarget & HTMLDivElement }) {
-    if (evt.key === 'Enter') {
-      evt.preventDefault();
-      insertLineBreak();
+    switch (evt.key) {
+      default:
+        return;
+      case 'Enter':
+        addLine();
+        tick().then(() => tryFocusNode(evt.currentTarget.nextElementSibling));
+        break;
+      case 'ArrowUp':
+        tryFocusNode(evt.currentTarget.previousElementSibling);
+        break;
+      case 'ArrowDown':
+        tryFocusNode(evt.currentTarget.nextElementSibling);
+        break;
     }
+    evt.preventDefault();
   }
 
   // Works well for contenteditable elements.
-  function insertLineBreak() {
+  // BUG Some issue with multiple line breaks...
+  function insertLineBreak(mainNode: Element) {
     const range = document.getSelection()?.getRangeAt(0);
     if (range) {
-      const { startContainer, endContainer } = range;
-      console.log(startContainer, endContainer);
-      const newNode = document.createTextNode('\n\r');
-      range.insertNode(newNode);
-      let next = newNode.nextSibling;
-      if (next === null) {
-        next = newNode.nextSibling;
+      const br = document.createElement('br');
+      let { startContainer, endContainer, startOffset, endOffset } = range;
+      if (endContainer === mainNode) {
+        startContainer = mainNode.childNodes[startOffset];
+        endContainer = mainNode.childNodes[endOffset];
       }
-      if (next !== null) {
-        range.setStart(next, 0);
-        range.setEnd(next, 0);
+      // check if container is a text node
+      switch (endContainer.nodeType) {
+        case Node.ELEMENT_NODE:
+          (endContainer as Element).insertAdjacentElement('afterend', br);
+          break;
+        case Node.TEXT_NODE:
+          range.insertNode(br);
+          break;
+        default:
+          console.log('error (insertLineBreak): neither');
+          return;
+      }
+      const nextNode = br.nextSibling;
+      if (nextNode) {
+        range.setStart(nextNode, 0);
+        range.setEnd(nextNode, 0);
+      } else {
+        console.log('error (insertLineBreak): next container does not exist');
       }
     }
     // old version
@@ -103,36 +158,37 @@
   }
 
   function mirrorHtml() {
-    mirror.replaceChildren(editor.cloneNode(true));
+    const clone = editor.cloneNode(true);
+    // mirror.replaceChildren(clone.childNodes ?? null);
   }
 
   onMount(() => {
-    editor.innerHTML = editorHtml;
-    rules.value = rulesCss;
-    update();
-    mirrorHtml();
-
-    const elStyle = document.createElement('style');
-    const head = document.head || document.getElementsByTagName('head')[0];
-    head.appendChild(elStyle);
-    elStyle.appendChild(document.createTextNode(`.transformed {${get(stylesheet)}}`));
-    stylesheet.subscribe((css) => {
-      if (elStyle.firstChild) {
-        elStyle.replaceChild(document.createTextNode(`.transformed {${css}}`), elStyle.firstChild);
-      }
-    });
+    // editor.innerHTML = editorHtml;
+    // rules.value = rulesCss;
+    // update();
+    // mirrorHtml();
+    // const elStyle = document.createElement('style');
+    // const head = document.head || document.getElementsByTagName('head')[0];
+    // head.appendChild(elStyle);
+    // elStyle.appendChild(document.createTextNode(`.transformed {${get(stylesheet)}}`));
+    // stylesheet.subscribe((css) => {
+    //   if (elStyle.firstChild) {
+    //     elStyle.replaceChild(document.createTextNode(`.transformed {${css}}`), elStyle.firstChild);
+    //   }
+    // });
   });
 </script>
 
 <div class="col gap fill-w">
   <br />
-  <div class="grid3 gap">
-    <div class="row center">Default</div>
-    <div />
-    <div class="row center">Styled</div>
-  </div>
-  <div class="grid2 gap">
-    <div><div bind:this={editor} class="editable" on:click={ed_clk} on:focusin={ed_fsi} on:focusout={ed_fso} on:keydown={ed_key} /></div>
+  <div class="grid gap">
+    <div>
+      <div class="editor" role="presentation" bind:this={editor}>
+        {#each lines as line}
+          <div class="line" role="textbox" on:click={stopPropagation} on:keydown={ed_key} contenteditable tabindex="-0">{line}</div>
+        {/each}
+      </div>
+    </div>
     <div>
       <textarea bind:this={rules} class="styles" on:input={update} on:keydown={keydown} />
     </div>
@@ -141,12 +197,15 @@
 </div>
 
 <style>
-  .editable {
+  .editor {
     height: 100%;
     width: 100%;
+    overflow: auto;
+    cursor: text;
   }
-  .editable:not(.focused) {
-    cursor: pointer;
+  .editor > .line {
+    outline: none;
+    white-space: pre;
   }
   .styles {
     min-height: 18em;
@@ -165,7 +224,7 @@
     gap: 2px;
   }
 
-  :is(.grid3, .grid2) {
+  .grid {
     display: grid;
     & > div {
       background-color: var(--color-1);
@@ -173,8 +232,8 @@
       width: 100%;
     }
   }
-  :is(.grid3, .grid2) > :nth-child(1),
-  :is(.grid3, .grid2) > :nth-child(3) {
+  .grid > :nth-child(1),
+  .grid > :nth-child(3) {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -186,7 +245,7 @@
       background-color: var(--color-2);
     }
   }
-  :is(.grid3, .grid2) > :nth-child(2) {
+  .grid > :nth-child(2) {
     min-width: 15em;
     & textarea {
       box-sizing: border-box;
@@ -196,10 +255,7 @@
     }
   }
 
-  .grid3 {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-  .grid2 {
-    grid-template-columns: 1fr 1fr;
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
   }
 </style>
