@@ -1,3 +1,5 @@
+<!-- gave up -->
+
 <script lang="ts">
   import { countReverse, range } from '$lib/lib';
   import { onMount, tick } from 'svelte';
@@ -62,6 +64,20 @@
   function stopPropagation(evt: Event) {
     // evt.stopPropagation();
     evt.stopImmediatePropagation();
+  }
+
+  let clientX = 0;
+  let clientY = 0;
+  function selectUpdate(evt: PointerEvent) {
+    //
+  }
+  function selectStart(evt: PointerEvent & { currentTarget: EventTarget & HTMLDivElement }) {
+    evt.currentTarget.addEventListener('pointermove', selectUpdate);
+    clientX = evt.clientX;
+    clientY = evt.clientY;
+  }
+  function selectStop(evt: PointerEvent & { currentTarget: EventTarget & Window }) {
+    evt.currentTarget.removeEventListener('pointermove', selectUpdate);
   }
 
   function ed_clk() {
@@ -179,13 +195,17 @@
   });
 </script>
 
+<svelte:window on:pointerup={selectStop} />
+
 <div class="col gap fill-w">
   <br />
   <div class="grid gap">
     <div>
       <div class="editor" role="presentation" bind:this={editor}>
         {#each lines as line}
-          <div class="line" role="textbox" on:click={stopPropagation} on:keydown={ed_key} contenteditable tabindex="-0">{line}</div>
+          <div class="line" role="textbox" on:pointerdown={selectStart} on:click={stopPropagation} on:keydown={ed_key} contenteditable tabindex="-0">
+            {line}
+          </div>
         {/each}
       </div>
     </div>
