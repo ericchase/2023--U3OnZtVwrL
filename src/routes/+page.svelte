@@ -6,7 +6,8 @@
   <a class="link" href="{base}/animation-frames">Animation Frames</a>
   <a class="link" href="{base}/html-elements">Html Elements</a>
   <a class="link" href="{base}/stylesheet-builder">Stylesheet Builder</a>
-  <a class="link" href="{base}/test">Test</a>
+  <a class="link" href="{base}/editor-v1">Editor v1</a>
+  <a class="link" href="{base}/editor-v2">Editor v2</a>
 </div>
 
 <style>
